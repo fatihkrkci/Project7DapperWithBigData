@@ -1,0 +1,708 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_DapperWithBigDataLayout.cshtml";
+}
+
+<style>
+    #areaChart_3 {
+        width: 100% !important;
+        height: auto !important;
+    }
+</style>
+
+<h1>Grafikler</h1>
+
+<div class="row page-titles mx-0">
+    <div class="col-sm-6">
+        <div class="welcome-text">
+            <h4>Hızlı Bakış Grafikleri</h4>
+            <p class="mb-0">Bu sayfada bulunan grafikler aracılığıyla 4.237.752 satırlık Araç Verilerinin istatistiksel verilerini inceleyebilirsiniz.</p>
+        </div>
+    </div>
+    <div class="col-sm-6 justify-content-sm-end mt-2 mt-sm-0 d-flex">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="javascript:void(0)">Charts</a></li>
+            <li class="breadcrumb-item active"><a href="javascript:void(0)">ChartJS</a></li>
+        </ol>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="row">
+            <!-- Basic Bar Chart -->
+            <div class="col-lg-6 col-sm-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Yakıt Tipi Dağılımı</h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="barChart_1"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gradient Bar Chart -->
+            <div class="col-lg-6 col-sm-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Markalara Göre Araç Sayısı</h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="barChart_2"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stacked Bar Chart -->
+            <div class="col-lg-6 col-sm-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Yıllara Göre Yakıt Dağılımı</h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="barChart_3"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Basic Line Chart -->
+            <div class="col-lg-6 col-sm-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Aylara Göre Araç Kayıt Sayısı</h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="lineChart_1"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gradient Line Chart -->
+            <div class="col-lg-6 col-sm-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Markaların Aylık Araç Kayıt Sayıları</h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="lineChart_2"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dual Line Chart -->
+            <div class="col-lg-6 col-sm-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Yıllara Göre Benzin ve Dizel Araç Sayıları</h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="lineChart_3"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Basic Area Chart -->
+            <div class="col-lg-6 col-sm-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Yıllara Göre Toplam Araç Kayıt Sayısı</h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="areaChart_1"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gradient Area Chart -->
+            <div class="col-lg-6 col-sm-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Yıllara Göre En Çok Kayıt Edilen Yakıt Tipleri</h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="areaChart_2"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pie Chart -->
+            <div class="col-lg-6 col-sm-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Pie Chart</h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="pie_chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Radar Chart -->
+            <div class="col-lg-6 col-sm-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Radar Chart</h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="radar_chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dual Area Chart -->
+            <div class="col-lg-12 col-sm-12">
+                <div class="card p-0">
+                    <div class="card-header">
+                        <h4 class="card-title">
+                            Yıllara Göre Benzin ve Dizel Araç Sayıları
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="areaChart_3"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    @* Basic Bar Chart *@
+    <script>
+        var fuelData = @Html.Raw(Json.Serialize(ViewBag.FuelDistribution));
+        var fuelTypes = fuelData.map(function(item) { return item.Fuel; });
+        var fuelCounts = fuelData.map(function(item) { return item.VehicleCount; });
+        var ctx = document.getElementById('barChart_1').getContext('2d');
+        var barChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: fuelTypes,
+                datasets: [{
+                    label: 'Yakıt Tipi Dağılımı',
+                    data: fuelCounts,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+
+    @* Gradient Bar Chart *@
+    <script>
+        var brandData = @Html.Raw(Json.Serialize(ViewBag.BrandDistribution));
+        var brandLabels = brandData.map(item => item.Brand);
+        var vehicleCounts = brandData.map(item => item.VehicleCount);
+        var ctx = document.getElementById('barChart_2').getContext('2d');
+        var gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(255, 99, 132, 1)');
+        gradient.addColorStop(1, 'rgba(54, 162, 235, 1)');
+        var barChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: brandLabels,
+                datasets: [{
+                    label: 'Markalara Göre Araç Sayısı',
+                    data: vehicleCounts,
+                    backgroundColor: gradient,
+                    borderColor: gradient,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+
+    @* Stacked Bar Chart *@
+    <script>
+        var ctx = document.getElementById('barChart_3').getContext('2d');
+        var chartData = @Html.Raw(Json.Serialize(ViewBag.FuelDistribution));
+        var years = [...new Set(chartData.map(item => item.Year_))];
+        var fuelTypes = [...new Set(chartData.map(item => item.Fuel))];
+        var datasets = fuelTypes.map(fuelType => {
+            return {
+                label: fuelType,
+                data: years.map(year => {
+                    var item = chartData.find(data => data.Year_ === year && data.Fuel === fuelType);
+                    return item ? item.VehicleCount : 0;
+                }),
+                backgroundColor: getRandomColor(),
+            };
+        });
+        var stackedBarChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: years,
+                datasets: datasets
+            },
+            options: {
+                scales: {
+                    x: {
+                        stacked: true
+                    },
+                    y: {
+                        stacked: true
+                    }
+                },
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                }
+            }
+        });
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF';
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+    </script>
+
+    @* Basic Line Chart *@
+    <script>
+        var ctx = document.getElementById('lineChart_1').getContext('2d');
+        var chartData = @Html.Raw(Json.Serialize(ViewBag.NewVehicleRegistrations));
+        var months = chartData.map(item => item.Month);
+        var vehicleCounts = chartData.map(item => item.VehicleCount);
+        var lineChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Aylara Göre Araç Kayıt Sayısı',
+                    data: vehicleCounts,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    fill: false,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                }
+            }
+        });
+    </script>
+
+    @* Gradient Line Chart *@
+    <script>
+        function randomColor() {
+            var letters = '0123456789ABCDEF';
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+        var ctx = document.getElementById('lineChart_2').getContext('2d');
+        var chartData = @Html.Raw(Json.Serialize(ViewBag.MonthlyVehicleRegistrationsByAllBrands));
+        var months = [...new Set(chartData.map(item => item.Month))];
+        var brands = [...new Set(chartData.map(item => item.Brand))];
+        var datasets = brands.map(brand => {
+            return {
+                label: brand,
+                data: months.map(month => {
+                    var item = chartData.find(x => x.Month === month && x.Brand === brand);
+                    return item ? item.VehicleCount : 0;
+                }),
+                backgroundColor: 'rgba(0,0,0,0)',
+                borderColor: randomColor(),
+                fill: false,
+                tension: 0.1
+            };
+        });
+        var gradientLineChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                }
+            }
+        });
+    </script>
+
+    @* Dual Line Chart *@
+    <script>
+        var ctx = document.getElementById('lineChart_3').getContext('2d');
+        var chartData = @Html.Raw(Json.Serialize(ViewBag.AnnualFuelTypeData));
+        var years = [...new Set(chartData.map(item => item.Year))];
+        var fuelTypes = [...new Set(chartData.map(item => item.FUEL))];
+        var datasets = fuelTypes.map(fuelType => {
+            return {
+                label: fuelType,
+                data: years.map(year => {
+                    var item = chartData.find(data => data.Year === year && data.FUEL === fuelType);
+                    return item ? item.VehicleCount : 0;
+                }),
+                borderColor: getRandomColor(),
+                fill: false,
+                tension: 0.1
+            };
+        });
+            var benzinData = years.map(year => {
+            var item = chartData.find(data => data.Year === year && data.FUEL === 'Benzin');
+            return item ? item.VehicleCount : 0;
+        });
+        var dizelData = years.map(year => {
+            var item = chartData.find(data => data.Year === year && data.FUEL === 'Dizel');
+            return item ? item.VehicleCount : 0;
+        });
+        var datasets = [
+            {
+                label: 'Benzin',
+                data: benzinData,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                fill: false,
+                tension: 0.1
+            },
+            {
+                label: 'Dizel',
+                data: dizelData,
+                borderColor: 'rgba(54, 162, 235, 1)',
+                fill: false,
+                tension: 0.1
+            }
+        ];
+        var lineChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: years,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF';
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+    </script>
+
+    @* Basic Area Chart *@
+    <script>
+        var chartData = @Html.Raw(Json.Serialize(ViewBag.AnnualVehicleCountData));
+        var years = chartData.map(item => item.Year);
+        var vehicleCounts = chartData.map(item => item.VehicleCount);
+        var ctx = document.getElementById('areaChart_1').getContext('2d');
+        var areaChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: years,
+                datasets: [{
+                    label: 'Yıllık Araç Kayıt Sayısı',
+                    data: vehicleCounts,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Yıl'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Araç Sayısı'
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+
+    @* Gradient Area Chart *@
+    <script>
+        var chartData = @Html.Raw(Json.Serialize(ViewBag.AnnualTopFuelTypeData));
+        var years = chartData.map(item => item.Year);
+        var fuelCounts = chartData.map(item => item.FuelTypeCount);
+        var fuelTypes = chartData.map(item => item.TopFuelType);
+        var ctx = document.getElementById('areaChart_2').getContext('2d');
+        var gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(75, 192, 192, 0.8)');
+        gradient.addColorStop(1, 'rgba(75, 192, 192, 0.1)');
+        var gradientAreaChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: years,
+                datasets: [{
+                    label: 'Yıllık En Popüler Yakıt Türü',
+                    data: fuelCounts,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: gradient,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                var index = context.dataIndex;
+                                var fuelType = fuelTypes[index];
+                                var fuelCount = context.raw;
+                                return `${fuelType}: ${fuelCount}`;
+                            }
+                        }
+                    },
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Yıl'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Kayıt Sayısı'
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+
+    @* Pie Chart *@
+    <script>
+        var chartData = @Html.Raw(Json.Serialize(ViewBag.CategoryWiseData));
+        var labels = [...new Set(chartData.map(item => item.SubCategory))];
+        var fuelData = labels.map(label => {
+            var item = chartData.find(x => x.Category === 'Fuel' && x.SubCategory === label);
+            return item ? item.VehicleCount : 0;
+        });
+        var shiftTypeData = labels.map(label => {
+            var item = chartData.find(x => x.Category === 'ShiftType' && x.SubCategory === label);
+            return item ? item.VehicleCount : 0;
+        });
+        var caseTypeData = labels.map(label => {
+            var item = chartData.find(x => x.Category === 'CaseType' && x.SubCategory === label);
+            return item ? item.VehicleCount : 0;
+        });
+        var ctx = document.getElementById('radar_chart').getContext('2d');
+        var radarChart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Yakıt Türü',
+                    data: fuelData,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderWidth: 1,
+                }, {
+                    label: 'Şanzıman Tipi',
+                    data: shiftTypeData,
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderWidth: 1,
+                }, {
+                    label: 'Kasa Tipi',
+                    data: caseTypeData,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 1,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    r: {
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+    @* Radar Chart *@
+    <script>
+        var chartData = @Html.Raw(Json.Serialize(ViewBag.ColorDistribution));
+        var labels = chartData.map(item => item.Color);
+        var data = chartData.map(item => item.Percentage);
+        var colors = labels.map(() => {
+            return `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.7)`;
+        });
+        var ctx = document.getElementById('pie_chart').getContext('2d');
+        var pieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Araç Renkleri Dağılımı (%)',
+                    data: data,
+                    backgroundColor: colors,
+                    borderColor: 'rgba(255, 255, 255, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return `${tooltipItem.label}: ${tooltipItem.raw}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+    @* Dual Area Chart *@
+    <script>
+        var ctx = document.getElementById('areaChart_3').getContext('2d');
+        var chartData = @Html.Raw(Json.Serialize(ViewBag.AnnualFuelTypeData));
+        var years = [...new Set(chartData.map(item => item.Year))];
+        var benzinData = years.map(year => {
+            var item = chartData.find(data => data.Year === year && data.FUEL === 'Benzin');
+            return item ? item.VehicleCount : 0;
+        });
+        var dizelData = years.map(year => {
+            var item = chartData.find(data => data.Year === year && data.FUEL === 'Dizel');
+            return item ? item.VehicleCount : 0;
+        });
+        var benzinGradient = ctx.createLinearGradient(0, 0, 0, 400);
+        benzinGradient.addColorStop(0, 'rgba(255, 99, 132, 0.8)');
+        benzinGradient.addColorStop(1, 'rgba(255, 99, 132, 0.2)');
+        var dizelGradient = ctx.createLinearGradient(0, 0, 0, 400);
+        dizelGradient.addColorStop(0, 'rgba(54, 162, 235, 0.8)');
+        dizelGradient.addColorStop(1, 'rgba(54, 162, 235, 0.2)');
+        var datasets = [
+            {
+                label: 'Benzin',
+                data: benzinData,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: benzinGradient,
+                fill: true,
+                tension: 0.1
+            },
+            {
+                label: 'Dizel',
+                data: dizelData,
+                borderColor: 'rgba(54, 162, 235, 1)',
+                backgroundColor: dizelGradient,
+                fill: true,
+                tension: 0.1
+            }
+        ];
+        var areaChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: years,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return `${context.dataset.label}: ${context.raw}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Araç Sayısı'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Yıl'
+                        },
+                        
+                    }
+                }
+            }
+        });
+    </script>
+}
