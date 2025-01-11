@@ -15,5 +15,10 @@ namespace Project7DapperWithBigData.Repositories.PlateRepositories
         Task<object> GetAnnualTopFuelTypeAsync();
         Task<object> GetCategoryWiseVehicleCountsAsync();
         Task<object> GetColorDistributionAsync();
+        Task<List<dynamic>> GetTop5BrandsAsync();
+        Task<List<dynamic>> GetTop5FuelTypesAsync();
+        Task<List<dynamic>> GetTop5ColorsAsync();
+        Task<List<dynamic>> GetTop5EngineCapacitiesAsync();
+        Task<List<dynamic>> GetTop5CaseTypesAsync();
     }
 }

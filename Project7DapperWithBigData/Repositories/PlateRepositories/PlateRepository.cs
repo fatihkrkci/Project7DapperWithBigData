@@ -191,5 +191,81 @@ namespace Project7DapperWithBigData.Repositories.PlateRepositories
             var values = await connection.QueryAsync(query);
             return values.ToList();
         }
+
+        public async Task<List<dynamic>> GetTop5BrandsAsync()
+        {
+            string query = @"
+    SELECT TOP 5 
+        BRAND, 
+        COUNT(*) AS VehicleCount
+    FROM PLATES
+    GROUP BY BRAND
+    ORDER BY VehicleCount DESC";
+
+            var connection = _dapperWithBigDataContext.CreateConnection();
+            var result = await connection.QueryAsync<dynamic>(query);
+            return result.ToList();
+        }
+
+        public async Task<List<dynamic>> GetTop5FuelTypesAsync()
+        {
+            string query = @"
+    SELECT TOP 5 
+        FUEL AS FuelType, 
+        COUNT(*) AS VehicleCount
+    FROM PLATES
+    GROUP BY FUEL
+    ORDER BY VehicleCount DESC";
+
+            var connection = _dapperWithBigDataContext.CreateConnection();
+            var result = await connection.QueryAsync<dynamic>(query);
+            return result.ToList();
+        }
+
+        public async Task<List<dynamic>> GetTop5ColorsAsync()
+        {
+            string query = @"
+    SELECT TOP 5 
+        COLOR AS Color, 
+        COUNT(*) AS VehicleCount
+    FROM PLATES
+    GROUP BY COLOR
+    ORDER BY VehicleCount DESC";
+
+            var connection = _dapperWithBigDataContext.CreateConnection();
+            var result = await connection.QueryAsync<dynamic>(query);
+            return result.ToList();
+        }
+
+        public async Task<List<dynamic>> GetTop5EngineCapacitiesAsync()
+        {
+            string query = @"
+    SELECT TOP 5 
+        MOTORVOLUME AS EngineCapacity, 
+        COUNT(*) AS VehicleCount
+    FROM PLATES
+    GROUP BY MOTORVOLUME
+    ORDER BY VehicleCount DESC";
+
+            var connection = _dapperWithBigDataContext.CreateConnection();
+            var result = await connection.QueryAsync<dynamic>(query);
+            return result.ToList();
+        }
+
+        public async Task<List<dynamic>> GetTop5CaseTypesAsync()
+        {
+            string query = @"
+    SELECT TOP 5 
+        CASETYPE AS CaseType, 
+        COUNT(*) AS VehicleCount
+    FROM PLATES
+    GROUP BY CASETYPE
+    ORDER BY VehicleCount DESC";
+
+            var connection = _dapperWithBigDataContext.CreateConnection();
+            var result = await connection.QueryAsync<dynamic>(query);
+            return result.ToList();
+        }
+
     }
 }

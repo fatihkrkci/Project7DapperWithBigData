@@ -56,5 +56,29 @@ namespace Project7DapperWithBigData.Controllers
 
             return View();
         }
+
+        public async Task<IActionResult> Top5Lists()
+        {
+            var top5Brands = await _plateRepository.GetTop5BrandsAsync();
+            ViewBag.Top5Brands = top5Brands;
+
+            // Top 5 Fuel Types
+            var top5FuelTypes = await _plateRepository.GetTop5FuelTypesAsync();
+            ViewBag.Top5FuelTypes = top5FuelTypes;
+
+            // Top 5 Colors
+            var top5Colors = await _plateRepository.GetTop5ColorsAsync();
+            ViewBag.Top5Colors = top5Colors;
+
+            // Top 5 Engine Capacities
+            var top5EngineCapacities = await _plateRepository.GetTop5EngineCapacitiesAsync();
+            ViewBag.Top5EngineCapacities = top5EngineCapacities;
+
+            // Top 5 Case Types
+            var top5CaseTypes = await _plateRepository.GetTop5CaseTypesAsync();
+            ViewBag.Top5CaseTypes = top5CaseTypes;
+
+            return View();
+        }
     }
 }
