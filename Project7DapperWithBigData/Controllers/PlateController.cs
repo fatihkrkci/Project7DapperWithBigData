@@ -31,7 +31,7 @@ namespace Project7DapperWithBigData.Controllers
 
             var pagedPlates = allPlates.ToPagedList(pageNumber, pageSize);
 
-            ViewBag.SearchTerm = searchTerm; // Arama terimini View'e göndermek için
+            ViewBag.SearchTerm = searchTerm;
             return View(pagedPlates);
         }
 

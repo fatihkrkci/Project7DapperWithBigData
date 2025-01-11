@@ -42,37 +42,35 @@ namespace Project7DapperWithBigData.Repositories.PlateRepositories
         public async Task<object> GetAnnualTopFuelTypeAsync()
         {
             var query = @"
-    WITH FuelCounts AS (
-        SELECT 
+            WITH FuelCounts AS (
+            SELECT 
             YEAR(LICENCEDATE) AS Year,
             FUEL,
             COUNT(*) AS FuelTypeCount
-        FROM PLATES
-        GROUP BY YEAR(LICENCEDATE), FUEL
-    ),
-    RankedFuelCounts AS (
-        SELECT 
-            Year,
+            FROM PLATES
+            GROUP BY YEAR(LICENCEDATE), FUEL
+                ),
+            RankedFuelCounts AS (
+            SELECT 
+                Year,
             FUEL,
             FuelTypeCount,
             RANK() OVER (PARTITION BY Year ORDER BY FuelTypeCount DESC) AS Rank
-        FROM FuelCounts
-    )
-    SELECT 
-        Year,
-        FUEL AS TopFuelType,
-        FuelTypeCount
-    FROM RankedFuelCounts
-    WHERE Rank = 1
-    ORDER BY Year;
-";
+            FROM FuelCounts
+            )
+            SELECT 
+                Year,
+                FUEL AS TopFuelType,
+                FuelTypeCount
+            FROM RankedFuelCounts
+            WHERE Rank = 1
+            ORDER BY Year;
+            ";
 
             var connection = _dapperWithBigDataContext.CreateConnection();
             var result = await connection.QueryAsync<dynamic>(query);
             return result.ToList();
         }
-
-
 
         public async Task<object> GetAnnualVehicleCountAsync()
         {
@@ -266,6 +264,5 @@ namespace Project7DapperWithBigData.Repositories.PlateRepositories
             var result = await connection.QueryAsync<dynamic>(query);
             return result.ToList();
         }
-
     }
 }
