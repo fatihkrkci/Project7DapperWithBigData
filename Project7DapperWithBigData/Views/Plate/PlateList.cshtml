@@ -1,0 +1,115 @@
+﻿@using X.PagedList
+@using X.PagedList.Mvc.Core
+@model IPagedList<ResultPlateDto>
+
+@{
+    ViewData["Title"] = "PlateList";
+    Layout = "~/Views/Shared/_DapperWithBigDataLayout.cshtml";
+}
+
+<style>
+    .pagination-wrapper {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .pagination {
+        display: inline-flex;
+        list-style: none;
+        padding: 0;
+    }
+
+        .pagination li {
+            margin: 0 5px;
+        }
+
+            .pagination li a {
+                display: block;
+                padding: 8px 12px;
+                text-decoration: none;
+                background-color: #f8f9fa;
+                color: #007bff;
+                border: 1px solid #dee2e6;
+                border-radius: 4px;
+                transition: background-color 0.3s ease, color 0.3s ease;
+            }
+
+                .pagination li a:hover {
+                    background-color: #007bff;
+                    color: #ffffff;
+                }
+
+            .pagination li.active a {
+                background-color: #28a745;
+                color: #ffffff;
+                border-color: #28a745;
+                font-weight: bold;
+                pointer-events: none;
+                cursor: default;
+            }
+
+            .pagination li.disabled a {
+                background-color: #e9ecef;
+                color: #6c757d;
+                pointer-events: none;
+                cursor: not-allowed;
+            }
+</style>
+
+<div class="col-12">
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">Plaka Listesi</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Plaka</th>
+                            <th>Lisans Tarihi</th>
+                            <th>Başlık</th>
+                            <th>Marka</th>
+                            <th>Model</th>
+                            <th>Yıl</th>
+                            <th>Yakıt Tipi</th>
+                            <th>Vites Tipi</th>
+                            <th>Renk</th>
+                            <th>Kasa Tipi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Plate</td>
+                                <td>@(item.LicenceDate.HasValue ? item.LicenceDate.Value.ToString("dd.MM.yyyy") : "N/A")</td>
+                                <td>@item.Title</td>
+                                <td>@item.Brand</td>
+                                <td>@item.Model</td>
+                                <td>@item.Year_</td>
+                                <td>@item.Fuel</td>
+                                <td>@item.ShiftType</td>
+                                <td>@item.Color</td>
+                                <td>@item.CaseType</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination-wrapper">
+                @Html.PagedListPager(
+                         Model,
+                         page => Url.Action("PlateList", new { page }),
+                         new PagedListRenderOptions
+                {
+                    DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+                    DisplayLinkToLastPage = PagedListDisplayMode.Always,
+                    DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+                    DisplayLinkToNextPage = PagedListDisplayMode.Always,
+                    MaximumPageNumbersToDisplay = 5
+                })
+            </div>
+        </div>
+    </div>
+</div>
