@@ -40,6 +40,8 @@
 
 💻 Asp.Net Core(6.0) ile geliştirildi.
 
+ℹ️ Dapper ORM tercih edildi.
+
 🏗️ Tek katmanlı yapı ile işlemler gerçekleştirildi.
 
 💾 Kaggle'dan 4.237.752 satır içeren bir veri seti kullanıldı.
